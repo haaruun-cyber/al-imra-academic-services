@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  REGISTRAR_USER
+  FINANCE_USER
+  STUDENT
+}
+
+enum RequestStatus {
+  PENDING
+  UNDER_REVIEW
+  ACCEPTED
+  REJECTED
+  COMPLETED
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  password      String
+  role          Role           @default(STUDENT)
+  status        String         @default("ACTIVE")
+  permissions   String[]       @default([])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  notifications Notification[]
+  auditLogs     AuditLog[]
+
+  @@map("users")
+}
+
+model Student {
+  id                  String               @id @default(cuid())
+  studentName         String
+  studentId           String               @unique
+  motherName          String
+  placeOfBirth        String
+  dateOfBirth         DateTime
+  mobile1             String
+  mobile2             String?
+  email               String
+  secondarySchool     String
+  graduationYear      Int
+  faculty             String
+  department          String
+  academicYear        String
+  modeOfStudy         String
+  notes               String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @default(now()) @updatedAt
+  certificateRequests CertificateRequest[]
+
+  @@map("students")
+}
+
+model CertificateRequest {
+  id          String        @id @default(cuid())
+  requestNo   String
+  studentId   String
+  status      RequestStatus @default(PENDING)
+  submittedAt DateTime      @default(now())
+  approvedAt  DateTime?
+  rejectedAt  DateTime?
+  completedAt DateTime?
+  pdfUrl      String?
+  student     Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  documents   Document[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
+
+  @@map("certificate_requests")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
+
+model Document {
+  id        String             @id @default(cuid())
+  fileName  String
+  filePath  String
+  requestId String
+  request   CertificateRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  createdAt DateTime           @default(now())
+
+  @@map("documents")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action      String
+  description String
+  createdAt   DateTime @default(now())
+
+  @@map("audit_logs")
+}

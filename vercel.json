@@ -1,0 +1,15 @@
+{
+  "buildCommand": "npm ci --legacy-peer-deps && npm run prisma:generate && npm run build",
+  "framework": "vite",
+  "outputDirectory": "dist",
+  "installCommand": "npm ci --legacy-peer-deps",
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "JWT_SECRET": "@jwt_secret",
+    "NODE_ENV": "production",
+    "CLIENT_URL": "@client_url",
+    "CLIENT_URLS": "@client_urls",
+    "PUBLIC_APP_URL": "@public_app_url"
+  }
+}
+
