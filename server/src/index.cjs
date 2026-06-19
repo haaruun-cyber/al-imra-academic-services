@@ -1,29 +1,32 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import rateLimit from 'express-rate-limit';
-import { config } from './config.js';
-import { authRouter } from './routes/auth.js';
-import { usersRouter } from './routes/users.js';
-import { requestsRouter } from './routes/requests.js';
-import { dashboardRouter } from './routes/dashboard.js';
-import { notificationsRouter } from './routes/notifications.js';
-import { documentsRouter } from './routes/documents.js';
-import { reportsRouter } from './routes/reports.js';
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
+
+const { config } = require('./config.js');
+const { authRouter } = require('./routes/auth.js');
+const { usersRouter } = require('./routes/users.js');
+const { requestsRouter } = require('./routes/requests.js');
+const { dashboardRouter } = require('./routes/dashboard.js');
+const { notificationsRouter } = require('./routes/notifications.js');
+const { documentsRouter } = require('./routes/documents.js');
+const { reportsRouter } = require('./routes/reports.js');
 
 const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-app.use(cors({
-  origin(origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, Postman)
-    if (!origin) return callback(null, true);
-    if (config.clientUrls.includes(origin)) return callback(null, true);
-    return callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true
-}));
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Allow requests with no origin (like mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+      if (config.clientUrls.includes(origin)) return callback(null, true);
+      return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true
+  })
+);
 app.use(express.json({ limit: '1mb' }));
 app.use(morgan(config.isProduction ? 'combined' : 'dev'));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 500 }));
@@ -56,5 +59,5 @@ if (!process.env.VERCEL) {
   });
 }
 
-// Export for Vercel serverless handler
-export default app;
+module.exports = app;
+
