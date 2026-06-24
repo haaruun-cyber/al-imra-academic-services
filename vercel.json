@@ -1,12 +1,13 @@
 {
+  "installCommand": "npm install --legacy-peer-deps",
   "buildCommand": "npm run build",
   "framework": "vite",
   "outputDirectory": "dist",
-  "installCommand": "npm install --legacy-peer-deps",
   "env": {
     "NODE_ENV": "production"
   },
   "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

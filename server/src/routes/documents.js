@@ -9,7 +9,11 @@ import { audit } from '../utils/audit.js';
 export const documentsRouter = Router();
 
 documentsRouter.get('/file/:fileName', asyncHandler(async (req, res) => {
-  const fullPath = path.resolve(config.documentStorageDir, req.params.fileName);
+  const storageDir = path.resolve(config.documentStorageDir);
+  const fullPath = path.resolve(storageDir, req.params.fileName);
+  if (!fullPath.startsWith(`${storageDir}${path.sep}`)) {
+    return res.status(400).json({ message: 'Invalid file name' });
+  }
   res.sendFile(fullPath);
 }));
 

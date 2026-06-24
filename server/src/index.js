@@ -3,6 +3,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { config } from './config.js';
 import { authRouter } from './routes/auth.js';
 import { usersRouter } from './routes/users.js';
@@ -12,6 +14,8 @@ import { notificationsRouter } from './routes/notifications.js';
 import { documentsRouter } from './routes/documents.js';
 import { reportsRouter } from './routes/reports.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const distDir = path.resolve(__dirname, '../../dist');
 const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
@@ -39,6 +43,13 @@ app.use('/api/dashboard', dashboardRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/documents', documentsRouter);
 app.use('/api/reports', reportsRouter);
+
+if (config.isProduction && !process.env.VERCEL) {
+  app.use(express.static(distDir));
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(distDir, 'index.html'));
+  });
+}
 
 // Global error handler
 app.use((err, _req, res, _next) => {
