@@ -6,10 +6,11 @@ dotenv.config();
 // For local development, use the server/storage/documents directory.
 const isVercel = !!process.env.VERCEL;
 const defaultStorageDir = isVercel ? '/tmp/al-imra-documents' : 'server/storage/documents';
+const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '';
 
 export const config = {
   port: process.env.PORT || 4000,
-  clientUrls: (process.env.CLIENT_URLS || process.env.CLIENT_URL || 'http://localhost:5173')
+  clientUrls: (process.env.CLIENT_URLS || process.env.CLIENT_URL || `http://localhost:5173,${vercelUrl}`)
     .split(',')
     .map((url) => url.trim())
     .filter(Boolean),
