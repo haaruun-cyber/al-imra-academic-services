@@ -8,7 +8,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: 'superadmin@alimra.edu', password: 'Admin@12345' });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
 
   async function submit(event) {
