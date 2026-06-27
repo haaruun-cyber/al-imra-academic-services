@@ -14,9 +14,17 @@ export default {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))'
         },
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))'
+        },
         accent: {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))'
+        },
+        success: {
+          DEFAULT: 'hsl(var(--success))',
+          foreground: 'hsl(var(--success-foreground))'
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
@@ -24,7 +32,8 @@ export default {
         }
       },
       boxShadow: {
-        soft: '0 18px 60px rgba(16, 24, 40, 0.12)'
+        soft: '0 18px 60px rgba(16, 24, 40, 0.12)',
+        card: '0 4px 12px rgba(9, 179, 15, 0.1)'
       }
     }
   },
